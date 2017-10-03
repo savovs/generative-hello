@@ -15,7 +15,7 @@ def randomStringFromString(string, length):
 
 	return result
 
-# Fitness
+# Fitness (smaller number is fitter)
 def asciiStringDistance(a, b):
 	distanceSum = 0
 	for charA, charB in zip(a, b):
@@ -23,7 +23,7 @@ def asciiStringDistance(a, b):
 
 	return distanceSum
 
-# 2 Tournaments, best of each become parents
+# Selection
 def tournament(inputSet):
 	first = random.choice(tuple(inputSet))
 	second = random.choice(tuple(inputSet))
@@ -66,6 +66,7 @@ def generatePopulation(old = set([]), currentGeneration = 0, maxGenerations = 50
 	fittest = min(old, key = itemgetter(1))
 	print('Generation {}, fittest: {}'.format(currentGeneration, fittest))
 
+	# Termination
 	if fittest[0] == TARGET:
 		print('Got em!')
 		return old
@@ -80,7 +81,7 @@ def generatePopulation(old = set([]), currentGeneration = 0, maxGenerations = 50
 	return old
 
 
-# Seed Population with tuples in this shape: (string, asciiStringDistance)
+# Init Population with tuples in this shape: (string, asciiStringDistance)
 population = set([])
 
 for i in range(500):
