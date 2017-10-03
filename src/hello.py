@@ -1,4 +1,3 @@
-from numpy import std
 import random
 from operator import itemgetter
 from pprint import pprint
