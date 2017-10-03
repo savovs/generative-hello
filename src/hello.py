@@ -1,5 +1,5 @@
+# Vlady Veselinov - Genetic algorithm hello world
 import random
-from operator import itemgetter
 
 GENES = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!."
 TARGET = "Hello World!"
@@ -33,6 +33,9 @@ def tournament(inputSet):
 	else:
 		return second
 
+def randomSelection(inputSet):
+	return random.choice(tuple(inputSet))
+
 def mutateString(string, genes = GENES, probability = 0.15):
 	if random.random() < probability:
 		index = random.randint(0, len(string) - 1)
@@ -60,25 +63,34 @@ def crossover(parent1, parent2, noCrossProbability = 0.05, fitnessFunction = asc
 		(newString2, fitnessFunction(newString2, TARGET)),
 	)
 
-def generatePopulation(old = set([]), currentGeneration = 0, maxGenerations = 50):
+def generatePopulation(old = set([]), currentGeneration = 0, maxGenerations = 100, selectionFunction = tournament):
 	new = set([])
 
-	fittest = min(old, key = itemgetter(1))
-	print('Generation {}, fittest: {}'.format(currentGeneration, fittest))
+	fittest = min(old, key = lambda item: item[1])
+	print('Generation {}, selection: {}, fittest: {}'.format(currentGeneration, selectionFunction.__name__, fittest))
 
 	# Termination
 	if fittest[0] == TARGET:
-		print('Got em!')
-		return old
+		print('\n')
+		return {
+			'generation': currentGeneration,
+			'selection': selectionFunction.__name__,
+			'success': True
+		}
 
 	if currentGeneration < maxGenerations:
 		while len(new) < len(old):
-			children = crossover(tournament(old), tournament(old))
+			children = crossover(selectionFunction(old), selectionFunction(old))
 			for child in children:
 				new.add(child)
 
-		return generatePopulation(new, currentGeneration + 1, maxGenerations)
-	return old
+		return generatePopulation(new, currentGeneration + 1, maxGenerations, selectionFunction = selectionFunction)
+
+	return {
+		'generation': currentGeneration,
+		'selection': selectionFunction.__name__,
+		'success': False
+	}
 
 
 # Init Population with tuples in this shape: (string, asciiStringDistance)
@@ -86,8 +98,21 @@ population = set([])
 
 for i in range(500):
 	string = randomStringFromString(GENES, len(TARGET))
-	population.add(
-		(string, asciiStringDistance(string, TARGET))
-	)
+	population.add((string, asciiStringDistance(string, TARGET)))
 
-generatePopulation(population, maxGenerations = 500)
+
+results = [
+	generatePopulation(population, selectionFunction = tournament),
+	generatePopulation(population, selectionFunction = randomSelection)
+]
+
+for result in results:
+	if result['success'] == True:
+		print(
+			'{} succeeded in {} generations'.format(result['selection'], result['generation'])
+		)
+
+	else:
+		print(
+			'{} didn\'t find the solution in {} generations'.format(result['selection'], result['generation'])
+		)
