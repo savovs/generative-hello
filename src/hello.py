@@ -107,7 +107,7 @@ results = [
 ]
 
 for result in results:
-	if result['success'] == True:
+	if result['success']:
 		print(
 			'{} succeeded in {} generations'.format(result['selection'], result['generation'])
 		)
