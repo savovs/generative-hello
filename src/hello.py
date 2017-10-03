@@ -17,11 +17,11 @@ def randomStringFromString(string, length):
 
 # Fitness (smaller number is fitter)
 def asciiStringDistance(a, b):
-	distanceSum = 0
+	distance = 0
 	for charA, charB in zip(a, b):
-		distanceSum += abs(ord(charA) - ord(charB))
+		distance += abs(ord(charA) - ord(charB))
 
-	return distanceSum
+	return distance
 
 # Selection
 def tournament(inputSet):
