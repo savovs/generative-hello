@@ -1,11 +1,9 @@
 import random
 from operator import itemgetter
-from pprint import pprint
 
 GENES = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!."
 TARGET = "Hello World!"
 
-# Utility functions
 def randomCharFromString(string):
 	return string[random.randint(0, len(string) - 1)]
 
@@ -62,7 +60,7 @@ def crossover(parent1, parent2, noCrossProbability = 0.05, fitnessFunction = asc
 		(newString2, fitnessFunction(newString2, TARGET)),
 	)
 
-def generatePopulation(old = set([]), currentGeneration = 0, howManyGenerations = 50):
+def generatePopulation(old = set([]), currentGeneration = 0, maxGenerations = 50):
 	new = set([])
 
 	fittest = min(old, key = itemgetter(1))
@@ -72,13 +70,13 @@ def generatePopulation(old = set([]), currentGeneration = 0, howManyGenerations 
 		print('Got em!')
 		return old
 
-	if currentGeneration < howManyGenerations:
+	if currentGeneration < maxGenerations:
 		while len(new) < len(old):
 			children = crossover(tournament(old), tournament(old))
 			for child in children:
 				new.add(child)
 
-		return generatePopulation(new, currentGeneration + 1, howManyGenerations)
+		return generatePopulation(new, currentGeneration + 1, maxGenerations)
 	return old
 
 
@@ -91,4 +89,4 @@ for i in range(500):
 		(string, asciiStringDistance(string, TARGET))
 	)
 
-result = generatePopulation(population, howManyGenerations = 500)
+generatePopulation(population, maxGenerations = 500)
